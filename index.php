@@ -40,8 +40,8 @@ if($u!==$ac['u']||!password_verify($p,$ac['h'])){
 }
 
 $lang=$_COOKIE['l']??'cn';
-$L=['cn'=>['up'=>'上传','new'=>'新建文件夹','cr'=>'创建','nm'=>'名称','sz'=>'大小','tm'=>'修改时间','ac'=>'操作','dl'=>'下载','rn'=>'重命名','cp'=>'复制','mv'=>'移动','rm'=>'删除','sh'=>'分享','emp'=>'空目录','tip'=>'确认删除','lnk'=>'直链地址','cpl'=>'复制链接','ok'=>'确定','cc'=>'取消','tar'=>'目标路径','sh_m'=>'分享管理','sh_new'=>'新建分享','sh_up'=>'更新密钥','sh_rnd'=>'随机生成','sh_cus'=>'自定义','sh_del'=>'取消分享','sh_ok'=>'分享链接已更新'],
-    'en'=>['up'=>'Upload','new'=>'New Folder','cr'=>'Create','nm'=>'Name','sz'=>'Size','tm'=>'Modified','ac'=>'Actions','dl'=>'Download','rn'=>'Rename','cp'=>'Copy','mv'=>'Move','rm'=>'Delete','sh'=>'Share','emp'=>'Empty','tip'=>'Delete','lnk'=>'Link','cpl'=>'Copy Link','ok'=>'OK','cc'=>'Cancel','tar'=>'Target Path','sh_m'=>'Share Manager','sh_new'=>'New Share','sh_up'=>'Update Key','sh_rnd'=>'Random','sh_cus'=>'Custom','sh_del'=>'Unshare','sh_ok'=>'Share Link Updated']];
+$L=['cn'=>['up'=>'上传','new'=>'新建文件夹','cr'=>'创建','nm'=>'名称','sz'=>'大小','tm'=>'修改时间','ac'=>'操作','dl'=>'下载','rn'=>'重命名','cp'=>'复制','mv'=>'移动','rm'=>'删除','sh'=>'分享','emp'=>'空目录','tip'=>'确认删除','lnk'=>'直链地址','cpl'=>'复制链接','ok'=>'确定','cc'=>'取消','tar'=>'目标路径','sh_m'=>'分享管理','sh_new'=>'新建分享','sh_up'=>'更新密钥','sh_rnd'=>'随机生成','sh_cus'=>'自定义','sh_del'=>'取消分享','sh_ok'=>'分享链接已生成并复制','sh_upd'=>'链接已更新'],
+    'en'=>['up'=>'Upload','new'=>'New Folder','cr'=>'Create','nm'=>'Name','sz'=>'Size','tm'=>'Modified','ac'=>'Actions','dl'=>'Download','rn'=>'Rename','cp'=>'Copy','mv'=>'Move','rm'=>'Delete','sh'=>'Share','emp'=>'Empty','tip'=>'Delete','lnk'=>'Link','cpl'=>'Copy Link','ok'=>'OK','cc'=>'Cancel','tar'=>'Target Path','sh_m'=>'Share Manager','sh_new'=>'New Share','sh_up'=>'Update Key','sh_rnd'=>'Random','sh_cus'=>'Custom','sh_del'=>'Unshare','sh_ok'=>'Link Created & Copied','sh_upd'=>'Link Updated']];
 if(isset($_GET['l'])){setcookie('l',$_GET['l'],time()+31536000);header("Location: ".BASE);exit;}
 function T($k){global $L,$lang;return $L[$lang][$k]??$k;}
 
@@ -64,7 +64,10 @@ class Dav {
     }
     private function chk(){global $csrf;if(($_POST['t']??'')!==$csrf)die('CSRF Error');}
     private function isP($n){return in_array($n,DENY);}
-    private function back($q=''){header("Location: ".$_SERVER['REQUEST_URI'].$q);exit;}
+    private function back($q=''){
+        $u = strtok($_SERVER['REQUEST_URI'], '?');
+        header("Location: ".$u.$q); exit;
+    }
 
     public function serve(){
         try {
@@ -175,7 +178,7 @@ class Dav {
         $sh=file_exists(SHARE_F)?include SHARE_F:[];$sm=[];if(is_array($sh))foreach($sh as $k=>$v)$sm[$v]=$k;
         $newS=$_GET['s_new']??'';
         $I=['f'=>'<svg class="i" viewBox="0 0 24 24"><path fill="currentColor" d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6z"/></svg>',
-            'd'=>'<svg class="i" viewBox="0 0 24 24" style="color:#f5c518"><path fill="currentColor" d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>',
+            'd'=>'<svg class="i" viewBox="0 0 24 24" style="color:#facc15"><path fill="currentColor" d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>',
             'dl'=>'<svg viewBox="0 0 24 24"><path fill="currentColor" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>',
             'sh'=>'<svg viewBox="0 0 24 24"><path fill="currentColor" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>',
             'ed'=>'<svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>',
