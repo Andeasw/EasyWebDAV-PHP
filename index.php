@@ -23,7 +23,6 @@ if(!file_exists(S_PATH)) @mkdir(S_PATH,0755,true);
 if(!file_exists(S_PATH.'/.htaccess')) @file_put_contents(S_PATH.'/.htaccess',"Deny from all");
 if(!file_exists(ROOT.'/.htaccess')) @file_put_contents(ROOT.'/.htaccess',"Options -Indexes\nRewriteEngine On\nRewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]");
 
-// --- PUBLIC SHARE HANDLER (PRE-AUTH) ---
 if(isset($_GET['s'])){
     $s=file_exists(SHARE_F)?include SHARE_F:[];
     if(isset($s[$_GET['s']]) && file_exists($f=S_PATH.'/'.$s[$_GET['s']])){
@@ -37,7 +36,6 @@ if(isset($_GET['s'])){
     http_response_code(404); die('Link Expired or Invalid');
 }
 
-// --- AUTHENTICATION ---
 if(!file_exists(AUTH_F)){
     if(!empty($_SERVER['PHP_AUTH_USER'])&&!empty($_SERVER['PHP_AUTH_PW'])){
         @file_put_contents(AUTH_F,"<?php return ".var_export(['u'=>$_SERVER['PHP_AUTH_USER'],'h'=>password_hash($_SERVER['PHP_AUTH_PW'],PASSWORD_DEFAULT)],true).";");
@@ -231,14 +229,16 @@ td{padding:14px 26px;border-bottom:1px solid var(--bd);font-size:14px;vertical-a
 .ft{padding:22px;text-align:center;font-size:13px;color:#a8a29e;background:var(--hv);border-top:1px solid var(--bd);display:flex;justify-content:center;align-items:center;gap:8px;flex-shrink:0}
 .gh svg{width:20px;height:20px;fill:#a8a29e;transition:.2s} .gh:hover svg{fill:var(--p)}
 .tg{background:0 0;border:none;cursor:pointer;padding:6px;border-radius:50%;color:var(--tx);transition:.2s}.tg:hover{background:rgba(0,0,0,0.05)}
-.float-icon{animation:flt 3s ease-in-out infinite;display:block;filter:drop-shadow(0 0 8px rgba(253, 184, 19, 0.6))} @keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.float-icon{animation:flt 3s ease-in-out infinite,shn 4s ease-in-out infinite;display:block} 
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes shn{0%,100%{filter:drop-shadow(0 0 2px rgba(253,184,19,0.4))}50%{filter:drop-shadow(0 0 10px rgba(253,184,19,0.9))}}
 @media(max-width:768px){body{padding:0;display:block}.box{margin:0;width:100%;max-width:none;border:none;border-radius:0;min-height:100vh}.hm{display:none}}
 </style></head>
 <body class="<?=$_COOKIE['dk']??''?>"><div class="box">
 <header>
     <div class="nav"><a href="<?=$this->uri?>/"><?=T('home')?></a><?php foreach($bc as $b) echo ' / <a href="'.$b['u'].'">'.htmlspecialchars($b['n']).'</a>';?></div>
     <div style="display:flex;gap:12px;align-items:center">
-        <button class="tg" onclick="mode()"><svg class="float-icon" width="24" height="24" viewBox="0 0 24 24" fill="#FDB813"><path d="M12 2c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z" fill="#FFF7D6" opacity="0.3"/></svg></button>
+        <button class="tg" onclick="mode()"><svg class="float-icon" width="24" height="24" viewBox="0 0 24 24" fill="#FDB813"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
         <div style="font-size:13px;font-weight:600"><a href="?l=cn" style="text-decoration:none;color:<?=$lang=='cn'?'var(--p)':'#a8a29e'?>">CN</a> <span style="color:#cbd5e1">|</span> <a href="?l=en" style="text-decoration:none;color:<?=$lang=='en'?'var(--p)':'#a8a29e'?>">EN</a></div>
     </div>
 </header>
