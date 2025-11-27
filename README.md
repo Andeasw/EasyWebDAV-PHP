@@ -3,107 +3,207 @@
 [![PHP Version](https://img.shields.io/badge/php-5.6%20--%208.4-blue.svg)](https://php.net/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-**EasyWebDAV** is an ultimate, lightweight, single-file WebDAV server and file manager for PHP. Designed for shared hosting and virtual environments, it requires no database and is ready to deploy instantly.
+**EasyWebDAV-PHP** is a lightweight, single-file WebDAV server and modern web-based file manager for PHP.
+It supports **standard WebDAV mounts** (including Windows, macOS Finder, iOS/Android, and OpenList / WebDAV mount clients) *and* offers a full-featured **HTML web interface** with file operations, dark mode, and direct-link sharing.
 
-It features a unique **"Hidden Path" security mechanism**, where the script filename itself acts as the access gateway, preventing unauthorized directory scanning.
+Designed for shared hosting and low-permission environments, it requires **no database**, writes minimal files, and is ready to deploy immediately.
+
+A signature feature is the **Hidden Path Security Mechanism**, which uses the script filename as an access gateway—preventing unauthorized directory browsing and automated scanner attacks.
 
 ---
 
 ## ✨ Key Features
 
-*   **🔒 Strict Path Security**: Access is only possible via the exact script filename. Direct directory access results in a 403 Forbidden error.
-*   **📂 Full WebDAV Support**: Compatible with Windows Explorer, macOS Finder, iOS (Documents, Files), and Android clients.
-*   **☁️ Unlimited Uploads**: No code-level file size limits (supports large file transfers depending on server config).
-*   **🛡️ Auto-Hardening**: Automatically generates `.htaccess` rules to prevent directory traversal and disable PHP execution in the storage folder (Anti-Webshell).
-*   **🎨 Modern UI**: Built-in responsive HTML5 file manager with drag-and-drop upload, folder creation, and file previews.
-*   **🚀 Broad Compatibility**: Works on PHP 5.6 through 8.4. 
+### 🔐 Security & Access
+
+* **Strict Hidden Path Security**
+  The script can only be accessed via its exact filename. Direct folder access returns **403 Forbidden**.
+* **Automatic Hardening**
+  Auto-generated `.htaccess` blocks PHP execution in storage folders and prevents traversal or direct file access.
+* **Works on shared hosting**
+  Includes CGI/FastCGI authentication recovery to fix stripped Authorization headers.
+
+---
+
+## 📂 WebDAV Support
+
+* **Fully compatible with standard WebDAV clients**, including:
+
+  * Windows “Map Network Drive”
+  * macOS Finder (CMD + K)
+  * iOS Files App / Documents
+  * Android WebDAV clients
+  * **OpenList / WebDAV mount apps**
+* Supports upload, download, folder creation, deletion, renaming, and streaming.
+* No code-level upload limit (server limits apply).
+
+---
+
+## 🌐 Modern Web Interface
+
+A built-in responsive HTML file manager featuring:
+
+* Clean, single-page UI (desktop + mobile)
+* **Dark Mode / Light Mode toggle**
+* Drag-and-drop upload
+* Create, rename, delete files & folders
+* Inline previews for images, text files, audio/video
+* **Direct-Link Sharing** (with auto-generated permanent URLs)
+* Breadcrumb navigation
+* File size and modification date display
+
+Users can log in directly through the browser—no WebDAV client required.
+
+---
+
+## 🚀 Broad Compatibility
+
+* **PHP 5.6 – 8.4**
+* No external libraries required
+* Works without database
+* Works on shared hosting, VPS, cPanel, Plesk, and Apache environments
 
 ---
 
 ## 🛠️ Installation & Deployment
 
 ### 1. Download
-Download the `easywebdav.php` file (or whatever you named the script) to your local machine.
 
-### 2. Rename (Security Best Practice)
-To utilize the Hidden Path mechanism effectively, rename the file to something unique.
-*   ❌ `webdav.php` (Too obvious)
-*   ✅ `my_disk.php`
-*   ✅ `x9s2a.php`
+Download the single file, e.g., `easywebdav.php`.
+
+### 2. Rename (highly recommended)
+
+Using a unique filename increases security:
+
+| Bad               | Good            |
+| ----------------- | --------------- |
+| `webdav.php`      | `drive_92x.php` |
+| `filemanager.php` | `x3portal.php`  |
+| `dav.php`         | `mydisk_7a.php` |
 
 ### 3. Upload
-Upload the file to any directory on your PHP/Apache server (e.g., `/disk/`).
 
-### 4. Initialize
-Visit the **full path** of the file in your browser:
-```text
-http://your-domain.com/disk/x9s2a.php
+Upload the file to your server, e.g., `/disk/`.
+
+### 4. Visit the script
+
+Navigate to the **full path**:
+
 ```
-> **Note**: If you try to visit `http://your-domain.com/disk/`, you will see a **403 Forbidden** error. This is a security feature. You must include the filename.
+http://your-domain.com/disk/drive_92x.php
+```
 
-### 5. Setup Credentials
-On the first visit, you will be prompted to set a **Username** and **Password**. Once saved, you will be redirected to the file manager.
+Accessing only `/disk/` returns **403 Forbidden** — intended behavior.
+
+### 5. Create Login Credentials
+
+On first access, set your Username & Password. The system will auto-generate:
+
+* `/storage/` directory
+* security `.htaccess`
+* config file
 
 ---
 
 ## 📡 WebDAV Connection Guide
 
-You can connect to this server using any WebDAV-compatible client.
+**Base URL (must include the .php filename):**
 
-**Connection Parameters:**
+```
+http://your-domain.com/disk/drive_92x.php
+```
 
-*   **Server URL:** `http://your-domain.com/disk/x9s2a.php`
-    *   *Important: You must include the `.php` extension in the URL.*
-*   **Username:** The username you set during setup.
-*   **Password:** The password you set during setup.
+### Windows
 
-### Client Examples
+1. Open “This PC” → “Map Network Drive”
+2. Folder:
 
-*   **Windows (Map Network Drive)**:
-    1.  Open "This PC" -> "Map network drive".
-    2.  Folder: `http://your-domain.com/disk/x9s2a.php`.
-    3.  Check "Connect using different credentials".
+   ```
+   http://your-domain.com/disk/drive_92x.php
+   ```
+3. Enter login credentials
 
-*   **iOS (Documents by Readdle / Files App)**:
-    1.  Add Connection -> WebDAV Server.
-    2.  URL: `http://your-domain.com/disk/x9s2a.php`.
+### macOS Finder
 
-*   **macOS Finder**:
-    1.  Go -> Connect to Server (Cmd+K).
-    2.  Address: `http://your-domain.com/disk/x9s2a.php`.
+1. Go → "Connect to Server…" (⌘ + K)
+2. Enter:
+
+   ```
+   http://your-domain.com/disk/drive_92x.php
+   ```
+
+### iOS / Android / OpenList
+
+Add a new WebDAV connection and use the same URL.
+
+---
+
+## 🎨 Built-in HTML File Manager
+
+The HTML UI supports:
+
+✔ Login form
+✔ Drag & drop upload
+✔ File/Folder CRUD operations
+✔ Rename / Move / Copy
+✔ Image & media previews
+✔ Dark Mode
+✔ **Direct-Link Sharing** for files (copy URL instantly)
+✔ Multi-select actions
+✔ Mobile-friendly layout
+
+Perfect for users who prefer a browser-based interface.
 
 ---
 
 ## 🔒 Security Architecture
 
-EasyWebDAV employs a multi-layered defense strategy:
+### 1. Hidden Path Protection
 
-1.  **Strict Path Mode**:
-    The script validates the `Base URI`. If a user or scanner tries to access the root folder or use `../` traversal, the request is rejected. The filename effectively acts as a "second password."
+The script refuses access unless the full filename matches.
+This blocks:
 
-2.  **Anti-Webshell Protection**:
-    The script automatically creates an `.htaccess` file in the `storage/` directory. It forces `php_flag engine off` and `RemoveHandler .php`, ensuring that even if an attacker uploads a malicious PHP file, they cannot execute it via the browser.
+* directory traversal
+* automated scanners
+* direct folder probing
+* common brute-force paths
 
-3.  **CGI/FastCGI Auth Fix**:
-    Many shared hosts run PHP in CGI mode, which strips the `Authorization` header, causing an infinite login loop. This script includes specific `.htaccess` rewrite rules and PHP logic to manually recover the credentials from the environment variables.
+### 2. Anti-Webshell Hardening
 
-4.  **System File Hiding**:
-    Access to sensitive files like `.htpasswd.php`, `.htaccess`, and the script itself is blocked at the code level.
+Automatically creates `.htaccess` that disables PHP execution inside storage folders.
+
+### 3. CGI/FastCGI Authorization Fix
+
+Ensures compatibility with shared hosting providers that strip `Authorization:` headers.
+
+### 4. Internal File Protection
+
+Blocks access to:
+
+* `.htpasswd.php`
+* `.htaccess`
+* config files
+* the script itself inside the file manager
 
 ---
 
 ## 📋 Requirements
 
-*   **Server**: Apache (Required for `.htaccess` rules to work).
-*   **PHP Version**: 5.6, 7.x, 8.0 - 8.4.
-*   **Permissions**: The directory containing the script must be writable (755 or 777) so the script can create the `storage` folder and configuration files.
+* **Apache** (required for `.htaccess` rules)
+* **PHP 5.6 – 8.4**
+* Script directory must be writable (755/775/777 depending on host)
 
 ---
 
 ## ⚠️ Disclaimer
 
-This software is provided "as is", without warranty of any kind, express or implied. The author is not responsible for any data loss or security issues that may arise from the use of this software. Please backup your data regularly.
+This software is provided “as is”, without warranty of any kind.
+Always back up your data before use.
 
 ---
 
-Copyright © 2025 Prince.
+### © 2025 Prince — EasyWebDAV-PHP
+
+MIT Licensed.
+
+---
