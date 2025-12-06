@@ -454,3 +454,4 @@ function copyLink(id){const el=$(id);el.select();document.execCommand('copy');sh
 window.onclick=e=>{if(e.target.className==='mod') cl();};
 if(quick){copyLink('q_lnk');history.replaceState(null,'',location.pathname+location.search.replace(/[\?&]quick=[^&]+/, '').replace(/^&/, '?'));}
 </script></body></html><?php } } ?>
+
